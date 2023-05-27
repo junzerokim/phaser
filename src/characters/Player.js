@@ -20,16 +20,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 해당 오브젝트가 물리적으로 얼만큼의 면적을 차지할 지 설정하는 함수
     // 디폴트로 이미지 사이즈로 설정되는데, 그러면 추후 몹을 추가했을 때 너무 잘 부딪히는 느낌이 드므로 원본 이미지보다 약간 작게 설정
     this.setBodySize(28, 32);
-
+    // 걷기 애니메이션 재생 여부를 위한 멤버 변수
     this.m_moving = false;
   }
 
+  // player가 움직이도록 하는 함수
   move(vector) {
     let PLAYER_SPEED = 3;
 
     this.x += vector[0] * PLAYER_SPEED;
     this.y += vector[1] * PLAYER_SPEED;
 
+    // 왼쪽을 바라볼 때 왼쪽을, 오른쪽을 바라볼 때 오른쪽을 바라봄
     if (vector[0] === -1) this.flipX = false;
     else if (vector[0] === 1) this.flipX = true;
   }
