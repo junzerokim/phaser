@@ -9,9 +9,9 @@ export default class PlayingScene extends Phaser.Scene {
   }
 
   create() {
-    // 사용할 sound들을 추가해놓는 부분입니다.
-    // load는 전역적으로 어떤 scene에서든 asset을 사용할 수 있도록 load 해주는 것이고,
-    // add는 해당 scene에서 사용할 수 있도록 scene의 멤버 변수로 추가할 때 사용하는 것입니다.
+    // 사용할 sound들을 추가
+    // load는 전역적으로 어떤 scene에서든 asset을 사용할 수 있도록 load 해주는 것이
+    // add는 해당 scene에서 사용할 수 있도록 scene의 멤버 변수로 추가할 때 사용하는 것
     this.sound.pauseOnBlur = false;
     this.m_beamSound = this.sound.add('audio_beam');
     this.m_scratchSound = this.sound.add('audio_scratch');
@@ -26,12 +26,13 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_pauseInSound = this.sound.add('audio_pauseIn');
     this.m_pauseOutSound = this.sound.add('audio_pauseOut');
 
-    // player를 m_player라는 멤버 변수로 추가합니다.
+    // player를 m_player라는 멤버 변수로 추가
     this.m_player = new Player(this);
 
+    // camera가 player를 따라옴
     this.cameras.main.startFollow(this.m_player);
 
-    // PlayingScene의 background를 설정합니다.
+    // PlayingScene의 background를 설정
     setBackground(this, 'background1');
 
     this.m_cursorKeys = this.input.keyboard.createCursorKeys();
