@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Player from '../characters/Player';
 import Config from '../Config';
 import { setBackground } from '../utils/backgroundManager';
+import { addMobEvent } from '../utils/mobManager';
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -36,6 +37,14 @@ export default class PlayingScene extends Phaser.Scene {
     setBackground(this, 'background1');
 
     this.m_cursorKeys = this.input.keyboard.createCursorKeys();
+
+    // m_mobs는 physics group으로, 속한 모든 오브젝트에 동일한 물리법칙 적용 가능
+    // m_mobEvents는 mob event의 timer를 담을 배열, mob event를 추가 및 제거 시 사용
+    // addMobEvent는 m_mobEvents에 mob event의 timer를 추가
+    this.m_mobs = this.physics.add.group();
+    this.m_mobEvents = [];
+    // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
+    addMobEvent(this, 1000, 'mob1', 'mob1_anim', 10, 0.9);
   }
 
   update() {
