@@ -1,8 +1,10 @@
 import Phaser from 'phaser';
-import Player from '../characters/Player';
 import Config from '../Config';
+import Player from '../characters/Player';
+import Mob from '../characters/Mob';
 import { setBackground } from '../utils/backgroundManager';
 import { addMobEvent } from '../utils/mobManager';
+import { addAttackEvent } from '../utils/attackManager';
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -41,10 +43,24 @@ export default class PlayingScene extends Phaser.Scene {
     // m_mobs는 physics group으로, 속한 모든 오브젝트에 동일한 물리법칙 적용 가능
     // m_mobEvents는 mob event의 timer를 담을 배열, mob event를 추가 및 제거 시 사용
     // addMobEvent는 m_mobEvents에 mob event의 timer를 추가
+    // mobs
     this.m_mobs = this.physics.add.group();
+    // 처음에 등장하는 몹을 수동으로 추가
+    // 추가하지 않으면 closest mob을 찾는 부분에서 에러 발생
+    this.m_mobs.add(new Mob(this, 0, 0, 'lion', 'lion_anim', 10));
     this.m_mobEvents = [];
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
-    addMobEvent(this, 1000, 'mob1', 'mob1_anim', 10, 0.9);
+    addMobEvent(this, 30000, 'lion', 'lion_anim', 10, 0.9);
+
+    // attacks
+    // 정적인 공격과 동적인 공격의 동작 방식이 다르므로 따로 group을 생성
+    // attack event를 저장하는 객체도 멤버 변수로 생성
+    // 이는 공격 강화 등에 활용될 예정
+    this.m_weaponDynamic = this.add.group();
+    this.m_weaponStatic = this.add.group();
+    this.m_attackEvents = {};
+    // PlayingScene이 실행되면 바로 beam attack event를 추가
+    addAttackEvent(this, 'beam', 10, 1, 1000);
   }
 
   update() {
@@ -55,6 +71,13 @@ export default class PlayingScene extends Phaser.Scene {
 
     this.m_background.tilePositionX = this.m_player.x - Config.width / 2;
     this.m_background.tilePositionY = this.m_player.y - Config.height / 2;
+
+    // player로부터 가장 가까운 mob
+    // 가장 가까운 mob은 mob, player의 움직임에 따라 계속 바뀌므로 update 내에서 구해야 함
+    // getChildren: group에 속한 모든 객체들의 배열을 리턴
+    const closest = this.physics.closest(this.m_player, this.m_mobs.getChildren());
+
+    this.m_closest = closest;
   }
 
   // player가 움직이도록 해주는 함수
