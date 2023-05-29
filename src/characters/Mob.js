@@ -63,4 +63,58 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     if (this.x < this.scene.m_player.x) this.flipX = true;
     else this.flipX = false;
   }
+
+  // mob이 dynamic attack에 맞을 경우 실행되는 함수
+  hitByDynamic(weaponDynamic, damage) {
+    // 공격에 맞은 소리를 재생
+    // this.scene.m_hitMobSound.play();
+    // mob의 hp에서 damage만큼 감소
+    this.m_hp -= damage;
+    // 공격 받은 mob의 투명도를 1초간 조절함으로써 공격 받은 것을 표시
+    this.displayHit();
+
+    // dynamic 공격을 제거
+    weaponDynamic.destroy();
+  }
+
+  // mob이 static attack에 맞을 경우 실행되는 함수
+  hitByStatic(damage) {
+    // 쿨타임인 경우 바로 리턴
+    if (!this.m_canBeAttacked) return;
+
+    // 공격에 맞은 소리를 재생
+    // this.scene.m_hitMobSound.play();
+    // mob의 hp에서 damage만큼 감소
+    this.m_hp -= damage;
+    // 공격받은 몹의 투명도를 1초간 조절함으로써 공격 받은 것을 표시
+    this.displayHit();
+    // 쿨타임을 갖는다
+    this.getCoolDown();
+  }
+
+  // 공격받은 mob의 투명도를 1초간 조절함으로써 공격받은 것을 표시
+  displayHit() {
+    // mob의 투명도를 0.5로 변경하고, 1초 후 1로 변경
+    this.alpha = 0.5;
+    this.scene.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.alpha = 1;
+      },
+      loop: false,
+    });
+  }
+
+  // 1초 쿨타임을 갖는 함수
+  getCoolDown() {
+    // 공격 받을 수 있는지 여부를 false로 변경하고 1초 후 true로 변경
+    this.m_canBeAttacked = false;
+    this.scene.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.m_canBeAttacked = true;
+      },
+      loop: false,
+    });
+  }
 }

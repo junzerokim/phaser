@@ -61,6 +61,28 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_attackEvents = {};
     // PlayingScene이 실행되면 바로 beam attack event를 추가
     addAttackEvent(this, 'beam', 10, 1, 1000);
+
+    // collisions
+    // Player와 mob이 부딪혔을 경우 player에 데미지 10을 준다
+    this.physics.add.overlap(this.m_player, this.m_mobs, () => this.m_player.hitByMob(10), null, this);
+
+    // mob이 dynamic 공격에 부딪혔을 경우 mob에 해당 공격 데미지만큼 데미지를 준다
+    this.physics.add.overlap(
+      this.m_weaponDynamic,
+      this.m_mobs,
+      (weapon, mob) => mob.hitByDynamic(weapon, weapon.m_damage),
+      null,
+      this
+    );
+
+    // mob이 static 공격에 부딪혔을 경우 mob에 해당 공격의 데미지만큼 데미지를 준다
+    this.physics.add.overlap(
+      this.m_weaponDynamic,
+      this.m_mobs,
+      (weapon, mob) => mob.hitByStatic(weapon, weapon.m_damage),
+      null,
+      this
+    );
   }
 
   update() {

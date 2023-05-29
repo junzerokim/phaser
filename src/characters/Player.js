@@ -22,6 +22,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setBodySize(28, 32);
     // 걷기 애니메이션 재생 여부를 위한 멤버 변수
     this.m_moving = false;
+
+    // player가 공격 받을 수 있는지 여부를 나타내는 멤버 변수
+    // 공격 받은 후 쿨타임을 주기 위해 사용
+    this.m_canBeAttacked = true;
   }
 
   // player가 움직이도록 하는 함수
@@ -34,5 +38,30 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 왼쪽을 바라볼 때 왼쪽을, 오른쪽을 바라볼 때 오른쪽을 바라봄
     if (vector[0] === -1) this.flipX = false;
     else if (vector[0] === 1) this.flipX = true;
+  }
+
+  // mob과 접촉했을 경우 실행되는 함수
+  hitByMob(damage) {
+    // 쿨타임이었던 경우 공격을 받지 않는다
+    if (!this.m_canBeAttacked) return;
+
+    // player가 다친 소리를 재생
+    // this.scene.m_hurtSound.play();
+    // 쿨타임을 갖는다
+    this.getCoolDown();
+  }
+
+  getCoolDown() {
+    this.m_canBeAttacked = false;
+    this.alpha = 0.5;
+    this.scene.time.addEvent({
+      delay: 1000,
+      callback: () => {
+        this.alpha = 1;
+        this.m_canBeAttacked = true;
+      },
+      callbackScope: this,
+      loop: false,
+    });
   }
 }
