@@ -58,6 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.m_hpBar.decrease(damage);
 
+    // HP가 0 이하가 되면 loseGame 함수 실행
     if (this.m_hpBar.m_currentHp <= 0) {
       loseGame(this.scene);
     }
