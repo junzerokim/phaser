@@ -50,7 +50,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_mobs.add(new Mob(this, 0, 0, 'lion', 'lion_anim', 10));
     this.m_mobEvents = [];
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
-    addMobEvent(this, 30000, 'lion', 'lion_anim', 10, 0.9);
+    addMobEvent(this, 10000, 'lion', 'lion_anim', 10, 0.9);
 
     // attacks
     // 정적인 공격과 동적인 공격의 동작 방식이 다르므로 따로 group을 생성
