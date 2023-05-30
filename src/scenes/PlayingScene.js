@@ -50,7 +50,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_mobs.add(new Mob(this, 0, 0, 'lion', 'lion_anim', 10));
     this.m_mobEvents = [];
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
-    addMobEvent(this, 10000, 'lion', 'lion_anim', 10, 0.9);
+    addMobEvent(this, 1000, 'lion', 'lion_anim', 10, 0.9);
 
     // attacks
     // 정적인 공격과 동적인 공격의 동작 방식이 다르므로 따로 group을 생성
@@ -83,6 +83,12 @@ export default class PlayingScene extends Phaser.Scene {
       null,
       this
     );
+
+    // item
+    // exp up item들을 담을 physics group 추가
+    this.m_expUps = this.physics.add.group();
+    // player와 expUp이 접촉했을 때 pickExpUp 메소드가 동작
+    this.physics.add.overlap(this.m_player, this.m_expUps, this.pickExpUp, null, this);
   }
 
   update() {
@@ -100,6 +106,17 @@ export default class PlayingScene extends Phaser.Scene {
     const closest = this.physics.closest(this.m_player, this.m_mobs.getChildren());
 
     this.m_closest = closest;
+  }
+
+  // player와 expUp이 접촉했을 때 실행되는 메소드
+  pickExpUp(player, expUp) {
+    // expUp 비활성화하고 화면에 보이지 않게 함
+    expUp.disableBody(true, true);
+    // expUp 제거
+    expUp.destroy();
+    // 소리 재생
+    this.m_expUpSound.play();
+    console.log(`경험치 ${expUp.m_exp} 상승`);
   }
 
   // player가 움직이도록 해주는 함수

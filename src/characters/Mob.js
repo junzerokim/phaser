@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import Explosion from '../effects/Explosion';
+import ExpUp from '../items/ExpUp';
 
 export default class Mob extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture, animKey, initHp, dropRate) {
@@ -99,7 +100,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
 
   // 공격받은 mob의 투명도를 1초간 조절함으로써 공격받은 것을 표시
   displayHit() {
-    // mob의 투명도를 0.5로 변경하고, 1초 후 1로 변경
+    // mob의 투명도 0.5로 변경하고, 1초 후 1 변경
     this.alpha = 0.5;
     this.scene.time.addEvent({
       delay: 1000,
@@ -112,7 +113,7 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
 
   // 1초 쿨타임을 갖는 함수
   getCoolDown() {
-    // 공격 받을 수 있는지 여부를 false로 변경하고 1초 후 true로 변경
+    // 공격 받을 수 있는지 여부를 false로 변경하고 1초 후 true 변경
     this.m_canBeAttacked = false;
     this.scene.time.addEvent({
       delay: 1000,
@@ -124,12 +125,17 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
   }
 
   die() {
-    // 폭발 효과를 발생
+    // 폭발 효과 발생
     new Explosion(this.scene, this.x, this.y);
     this.scene.m_explosionSound.play();
-    // player 쪽으로 움직이게 만들었던 event를 제거
+    // dropRate의 확률로 item 드랍
+    if (Math.random() < this.m_dropRate) {
+      const expUp = new ExpUp(this.scene, this);
+      this.scene.m_expUps.add(expUp);
+    }
+    // player 쪽으로 움직이게 만들었던 event 제거
     this.scene.time.removeEvent(this.m_events);
-    // mob 객체를 제거
+    // mob 객체 제거
     this.destroy();
   }
 }
