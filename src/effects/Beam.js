@@ -39,7 +39,7 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
   setVelocity() {
     // 가장 가까운 mob이 없을 경우 beam이 위로 날아가도록 설정
     if (!this.scene.m_closest) {
-      this.setVelocity(-250);
+      this.setVelocityY(-250);
       return;
     }
     const _x = this.scene.m_closest.x - this.x;
@@ -52,15 +52,16 @@ export default class Beam extends Phaser.Physics.Arcade.Sprite {
   // 설정하지 않아도 기능적으로는 무방하지만 beam의 모습이 어색
   setAngle() {
     // Player와 Mob 사이의 각도
-    const angleToMob = Phaser.Math.Angle.Between(this.x, this.y, this.scene.m_closest.x, this.scene.m_closest.y);
+    if (this.scene.m_closest) {
+      const angleToMob = Phaser.Math.Angle.Between(this.x, this.y, this.scene.m_closest.x, this.scene.m_closest.y);
+      // beam 이미지의 각도를 설정
+      // 다음 문을 각각 주석 해제한 뒤 beam의 모습을 확인
+      this.rotation = angleToMob + Math.PI / 2 + Math.PI / 4;
 
-    // beam 이미지의 각도를 설정
-    // 다음 문을 각각 주석 해제한 뒤 beam의 모습을 확인
-    this.rotation = angleToMob + Math.PI / 2 + Math.PI / 4;
-
-    // angular velocity는 회전 속도를 의미하는데
-    // beam이 회전하지는 않으므로 0으로 설정
-    this.body.setAngularVelocity(0);
+      // angular velocity는 회전 속도를 의미하는데
+      // beam이 회전하지는 않으므로 0으로 설정
+      this.body.setAngularVelocity(0);
+    }
   }
 
   // beam의 damage를 설정
