@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Config from '../Config';
 import HpBar from '../ui/HpBar';
+import { loseGame } from '../utils/sceneManager';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene) {
@@ -28,6 +29,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // 공격 받은 후 쿨타임을 주기 위해 사용
     this.m_canBeAttacked = true;
 
+    // HP Bar를 player의 멤버 변수로 추가
     // scene, player, maxHp
     this.m_hpBar = new HpBar(scene, this, 100);
   }
@@ -57,7 +59,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.m_hpBar.decrease(damage);
 
     if (this.m_hpBar.m_currentHp <= 0) {
-      console.log('GAME OVER');
+      loseGame(this.scene);
     }
   }
 
