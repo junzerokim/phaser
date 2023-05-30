@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import Config from '../Config';
 import Player from '../characters/Player';
 import Mob from '../characters/Mob';
+import TopBar from '../ui/TopBar';
+import ExpBar from '../ui/ExpBar';
 import { setBackground } from '../utils/backgroundManager';
 import { addMobEvent } from '../utils/mobManager';
 import { addAttackEvent } from '../utils/attackManager';
@@ -47,10 +49,10 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_mobs = this.physics.add.group();
     // 처음에 등장하는 몹을 수동으로 추가
     // 추가하지 않으면 closest mob을 찾는 부분에서 에러 발생
-    this.m_mobs.add(new Mob(this, 0, 0, 'lion', 'lion_anim', 10));
+    this.m_mobs.add(new Mob(this, 0, 0, 'mob2', 'mob2_anim', 10));
     this.m_mobEvents = [];
     // scene, repeatGap, mobTexture, mobAnim, mobHp, mobDropRate
-    addMobEvent(this, 1000, 'lion', 'lion_anim', 10, 0.9);
+    addMobEvent(this, 1000, 'mob2', 'mob2_anim', 10, 0.9);
 
     // attacks
     // 정적인 공격과 동적인 공격의 동작 방식이 다르므로 따로 group을 생성
@@ -60,7 +62,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_weaponStatic = this.add.group();
     this.m_attackEvents = {};
     // PlayingScene이 실행되면 바로 beam attack event를 추가
-    addAttackEvent(this, 'beam', 10, 1, 1000);
+    addAttackEvent(this, 'beam', 10, 0.5, 1000);
 
     // collisions
     // Player와 mob이 부딪혔을 경우 player에 데미지 10을 준다
@@ -89,6 +91,11 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_expUps = this.physics.add.group();
     // player와 expUp이 접촉했을 때 pickExpUp 메소드가 동작
     this.physics.add.overlap(this.m_player, this.m_expUps, this.pickExpUp, null, this);
+
+    // topbar, expbar
+    // 맨 처음 maxExp는 50으로 설정
+    this.m_topBar = new TopBar(this);
+    this.m_expBar = new ExpBar(this, 50);
   }
 
   update() {
@@ -116,7 +123,13 @@ export default class PlayingScene extends Phaser.Scene {
     expUp.destroy();
     // 소리 재생
     this.m_expUpSound.play();
-    console.log(`경험치 ${expUp.m_exp} 상승`);
+    // console.log(`경험치 ${expUp.m_exp} 상승`);
+    // expUp item을 먹으면 expBar의 경험치를 아이템의 m_exp 값만큼 증가
+    this.m_expBar.increase(expUp.m_exp);
+    // 만약 현재 경험치가 maxExp 이상이면 레벨을 증가
+    if (this.m_expBar.m_currentExp >= this.m_expBar.m_maxExp) {
+      this.m_topBar.gainLevel();
+    }
   }
 
   // player가 움직이도록 해주는 함수
