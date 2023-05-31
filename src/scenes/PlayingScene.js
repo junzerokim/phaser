@@ -8,6 +8,7 @@ import { setBackground } from '../utils/backgroundManager';
 import { addMobEvent, removeOldestMobEvent } from '../utils/mobManager';
 import { addAttackEvent, setAttackScale, setAttackDamage } from '../utils/attackManager';
 import { pause } from '../utils/pauseManager';
+import { createTime } from '../utils/time';
 
 export default class PlayingScene extends Phaser.Scene {
   constructor() {
@@ -107,6 +108,10 @@ export default class PlayingScene extends Phaser.Scene {
       },
       this
     );
+
+    // time
+    // 플레이 시간을 생성
+    createTime(this);
   }
 
   update() {
