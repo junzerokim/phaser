@@ -56,6 +56,11 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     scene.events.on('update', (time, delta) => {
       this.update(time, delta);
     });
+
+    // 공격 받을 수 있는지 여부를 뜻하는 멤버 변수
+    // static 공격의 경우 처음 접촉했을 때 쿨타임을 주지 않으면
+    // 매 프레임당 계속해서 공격한 것으로 처리되므로 해당 변수로 생성
+    this.m_canBeAttacked = true;
   }
 
   update() {

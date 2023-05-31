@@ -6,7 +6,7 @@ import TopBar from '../ui/TopBar';
 import ExpBar from '../ui/ExpBar';
 import { setBackground } from '../utils/backgroundManager';
 import { addMobEvent, removeOldestMobEvent } from '../utils/mobManager';
-import { addAttackEvent } from '../utils/attackManager';
+import { addAttackEvent, setAttackScale, setAttackDamage } from '../utils/attackManager';
 import { pause } from '../utils/pauseManager';
 
 export default class PlayingScene extends Phaser.Scene {
@@ -63,7 +63,7 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_weaponStatic = this.add.group();
     this.m_attackEvents = {};
     // PlayingScene이 실행되면 바로 beam attack event를 추가
-    addAttackEvent(this, 'beam', 10, 0.5, 1000);
+    addAttackEvent(this, 'claw', 10, 2.3, 1500);
 
     // collisions
     // Player와 mob이 부딪혔을 경우 player에 데미지 10을 준다
@@ -80,9 +80,9 @@ export default class PlayingScene extends Phaser.Scene {
 
     // mob이 static 공격에 부딪혔을 경우 mob에 해당 공격의 데미지만큼 데미지를 준다
     this.physics.add.overlap(
-      this.m_weaponDynamic,
+      this.m_weaponStatic,
       this.m_mobs,
-      (weapon, mob) => mob.hitByStatic(weapon, weapon.m_damage),
+      (weapon, mob) => mob.hitByStatic(weapon.m_damage),
       null,
       this
     );
@@ -149,25 +149,35 @@ export default class PlayingScene extends Phaser.Scene {
   afterLevelUp() {
     this.m_topBar.gainLevel();
 
-    // 레벨이 2, 3, 4 ..가 되면 등장하는 몹을 변경
-    // 이전 mob 이벤트를 지우지 않으면 난이도가 너무 어려워지기 때문에 이전 mob 이벤트 제거
-    // 레벨이 높아질수록 강하고 아이템 드랍율이 낮은 mob이 등장
-    // repeatGap은 동일하게 설정했지만 레벨이 올라갈수록 더 짧아지도록 설정 가능
     switch (this.m_topBar.m_level) {
       case 2:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, 'mob2', 'mob2_anim', 20, 0.8);
-        addAttackEvent(this, 'beam', 10, 0.5, 500);
+        // claw 공격 크기 확대
+        setAttackScale(this, 'claw', 4);
         break;
       case 3:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, 'mob3', 'mob3_anim', 30, 0.7);
-        addAttackEvent(this, 'beam', 10, 0.5, 300);
+        // catnip 공격 추가
+        addAttackEvent(this, 'catnip', 10, 2);
         break;
       case 4:
         removeOldestMobEvent(this);
         addMobEvent(this, 1000, 'mob4', 'mob4_anim', 40, 0.7);
-        addAttackEvent(this, 'beam', 10, 0.5, 200);
+        // catnip 공격 크기 확대
+        setAttackScale(this, 'catnip', 3);
+        break;
+      case 5:
+        // claw 공격 삭제
+        removeAttack(this, 'claw');
+        // beam 공격 추가
+        addAttackEvent(this, 'beam', 10, 1, 1000);
+        break;
+      case 6:
+        // beam 공격 크기 및 데미지 확대
+        setAttackScale(this, 'beam', 2);
+        setAttackDamage(this, 'beam', 40);
         break;
     }
   }
@@ -206,5 +216,10 @@ export default class PlayingScene extends Phaser.Scene {
 
     // vector를 player의 파라미터로 넘김
     player.move(vector);
+
+    // static 공격들은 player가 이동하면 그대로 따라오도록 한다
+    this.m_weaponStatic.children.each((weapon) => {
+      weapon.move(vector);
+    }, this);
   }
 }
