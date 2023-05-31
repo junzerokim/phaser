@@ -66,7 +66,7 @@ export default class PlayingScene extends Phaser.Scene {
     // PlayingScene이 실행되면 바로 beam attack event를 추가
     addAttackEvent(this, 'claw', 10, 2.3, 1500);
 
-    addMob(this, 'lion', 'lion_anim', 100);
+    // addMob(this, 'lion', 'lion_anim', 100);
 
     // collisions
     // Player와 mob이 부딪혔을 경우 player에 데미지 10을 준다
@@ -174,6 +174,7 @@ export default class PlayingScene extends Phaser.Scene {
         addMobEvent(this, 1000, 'mob4', 'mob4_anim', 40, 0.7);
         // catnip 공격 크기 확대
         setAttackScale(this, 'catnip', 3);
+        setBackground(this, 'background2');
         break;
       case 5:
         // claw 공격 삭제
@@ -185,6 +186,10 @@ export default class PlayingScene extends Phaser.Scene {
         // beam 공격 크기 및 데미지 확대
         setAttackScale(this, 'beam', 2);
         setAttackDamage(this, 'beam', 40);
+        break;
+      case 7:
+        addMob(this, 'lion', 'lion_anim', 200);
+        setBackground(this, 'background3');
         break;
     }
   }

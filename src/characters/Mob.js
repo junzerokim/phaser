@@ -122,12 +122,12 @@ export default class Mob extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
-  // 1초 쿨타임을 갖는 함수
+  // 0.8초 쿨타임을 갖는 함수
   getCoolDown() {
     // 공격 받을 수 있는지 여부를 false로 변경하고 1초 후 true 변경
     this.m_canBeAttacked = false;
     this.scene.time.addEvent({
-      delay: 1000,
+      delay: 800,
       callback: () => {
         this.m_canBeAttacked = true;
       },
