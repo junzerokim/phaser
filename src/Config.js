@@ -2,7 +2,7 @@ import LoadingScene from './scenes/LoadingScene';
 import MainScene from './scenes/MainScene';
 import PlayingScene from './scenes/PlayingScene';
 import GameOverScene from './scenes/GameOverScene';
-// import GameClearScene from "./scenes/GameClearScene";
+import GameClearScene from './scenes/GameClearScene';
 
 const Config = {
   // 게임 화면의 크기와 색을 설정
@@ -11,7 +11,7 @@ const Config = {
   backgroundColor: 0x000000,
 
   // 사용할 scene은 config의 scene 배열에 추가
-  scene: [LoadingScene, MainScene, PlayingScene, GameOverScene],
+  scene: [LoadingScene, MainScene, PlayingScene, GameOverScene, GameClearScene],
 
   // pixelArt를 사용할 경우 pixelArt: true로 설정해야 선명하게 보임
   pixelArt: true,

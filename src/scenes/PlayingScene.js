@@ -5,7 +5,7 @@ import Mob from '../characters/Mob';
 import TopBar from '../ui/TopBar';
 import ExpBar from '../ui/ExpBar';
 import { setBackground } from '../utils/backgroundManager';
-import { addMobEvent, removeOldestMobEvent } from '../utils/mobManager';
+import { addMob, addMobEvent, removeOldestMobEvent } from '../utils/mobManager';
 import { addAttackEvent, setAttackScale, setAttackDamage } from '../utils/attackManager';
 import { pause } from '../utils/pauseManager';
 import { createTime } from '../utils/time';
@@ -65,6 +65,8 @@ export default class PlayingScene extends Phaser.Scene {
     this.m_attackEvents = {};
     // PlayingScene이 실행되면 바로 beam attack event를 추가
     addAttackEvent(this, 'claw', 10, 2.3, 1500);
+
+    addMob(this, 'lion', 'lion_anim', 100);
 
     // collisions
     // Player와 mob이 부딪혔을 경우 player에 데미지 10을 준다
